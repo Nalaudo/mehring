@@ -32,9 +32,10 @@ export default function Oficio() {
           <Reveal>
             <div className="overflow-hidden rounded-2xl">
               <img
-                src="/img/hero-lourdes-mimy.jpg"
+                src="/img/hero-lourdes-mimy.webp"
                 alt="Ambiente de comedor Mehring"
                 loading="lazy"
+                decoding="async"
                 className="aspect-4/5 h-full w-full object-cover sm:aspect-3/2 lg:aspect-4/5"
               />
             </div>

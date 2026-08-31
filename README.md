@@ -9,8 +9,21 @@ de la Argentina, fundada en 1953.
 - **Vite 8** + **React 19** + **TypeScript**
 - **Tailwind CSS v4** (plugin `@tailwindcss/vite`, tema en `src/index.css`)
 - **lucide-react** para iconos
-- Animaciones de entrada con CSS + un hook propio de `IntersectionObserver`
-  (`src/hooks/useReveal.ts`) — sin dependencias de animación.
+- **Fuentes self-hosted** (`@fontsource-variable/fraunces` + `inter`), sin llamadas a
+  Google Fonts.
+- Animaciones de entrada con CSS + hooks propios de `IntersectionObserver`
+  (`src/hooks/useReveal.ts`, `src/hooks/useScrollSpy.ts`) — sin dependencias de animación.
+- Navegación con scroll suave con easing propio (`src/lib/smoothScroll.ts`).
+
+## Performance / SEO
+
+- Imágenes en **WebP**, ≤1800 px, con `loading="lazy"` salvo el hero
+  (`fetchpriority="high"` + `<link rel="preload">`).
+- `public/robots.txt` y `public/sitemap.xml` — actualizá el dominio antes de publicar.
+- JSON-LD `FurnitureStore` en `index.html` (dirección, teléfono, fundación).
+- **Medí siempre contra `npm run build` + `npm run preview`**, no contra `npm run dev`:
+  el dev server infla FCP/LCP y sirve `index.html` como fallback (rompe la validación
+  de robots.txt en Lighthouse).
 
 ## Desarrollo
 
@@ -24,14 +37,20 @@ npm run preview  # sirve el build
 ## Estructura
 
 ```
-public/img/            Fotos de producto y ambientes
+public/
+  img/                 Fotos de producto y ambientes (WebP)
+  robots.txt sitemap.xml favicon.svg
 src/
   data/products.ts     Catálogo (nombre, categoría, imagen, descripción)
-  hooks/useReveal.ts   Revelado al hacer scroll
+  hooks/
+    useReveal.ts        Revelado al hacer scroll
+    useScrollSpy.ts     Sección activa para el menú
+  lib/smoothScroll.ts  Scroll con easing + handler de anchors
   components/
     Nav, Hero, Historia, Colecciones, Oficio, Cita,
     Terminaciones, Contacto, Footer, Reveal, Logo
   App.tsx              Composición de la página
+  main.tsx             Entry + imports de fuentes
   index.css            Tema Tailwind + tipografía + animaciones
 ```
 

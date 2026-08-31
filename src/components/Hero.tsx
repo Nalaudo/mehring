@@ -5,8 +5,12 @@ export default function Hero() {
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink">
       <img
-        src="/img/hero-lourdes-sofi.jpg"
+        src="/img/hero-lourdes-sofi.webp"
         alt="Comedor con mesa Lourdes y sillas Sofi de Mehring"
+        width={1800}
+        height={1201}
+        fetchPriority="high"
+        decoding="async"
         className="hero-img absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-ink/75 via-ink/45 to-ink/95" />

@@ -4,9 +4,11 @@ export default function Cita() {
   return (
     <section className="relative overflow-hidden bg-ink py-28 text-cream sm:py-36">
       <img
-        src="/img/mesa-lourdes.jpg"
+        src="/img/mesa-lourdes.webp"
         alt=""
         aria-hidden
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 h-full w-full object-cover opacity-30"
       />
       <div className="absolute inset-0 bg-ink/50" />
