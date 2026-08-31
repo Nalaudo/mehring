@@ -1,11 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#2c2620" />
-  <g fill="none" stroke="#c9a26b" stroke-width="4" stroke-linecap="round">
-    <path d="M20 16v32" />
-    <path d="M44 16v32" />
-    <path d="M20 30h24" />
-    <path d="M20 22h24" />
-    <path d="M18 48l4-10" />
-    <path d="M46 48l-4-10" />
-  </g>
+  <rect width="64" height="64" rx="14" fill="#1a1712" />
+  <text
+    x="32"
+    y="34"
+    text-anchor="middle"
+    dominant-baseline="central"
+    font-family="'Trebuchet MS', 'Century Gothic', Verdana, Arial, sans-serif"
+    font-size="40"
+    font-weight="700"
+    letter-spacing="-2"
+    fill="#f6f1e7"
+  >m.</text>
 </svg>

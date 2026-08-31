@@ -9,8 +9,9 @@ de la Argentina, fundada en 1953.
 - **Vite 8** + **React 19** + **TypeScript**
 - **Tailwind CSS v4** (plugin `@tailwindcss/vite`, tema en `src/index.css`)
 - **lucide-react** para iconos
-- **Fuentes self-hosted** (`@fontsource-variable/fraunces` + `inter`), sin llamadas a
-  Google Fonts.
+- **Fuentes self-hosted**, sin llamadas a Google Fonts: Fraunces (display) + Inter (texto).
+- **Logo**: el logotipo oficial (`public/img/mehring-logo.svg`) va inline en
+  `src/components/Logo.tsx` con `fill="currentColor"`, así se adapta al color de cada fondo.
 - Animaciones de entrada con CSS + hooks propios de `IntersectionObserver`
   (`src/hooks/useReveal.ts`, `src/hooks/useScrollSpy.ts`) — sin dependencias de animación.
 - Navegación con scroll suave con easing propio (`src/lib/smoothScroll.ts`).

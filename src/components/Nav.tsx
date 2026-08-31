@@ -51,7 +51,7 @@ export default function Nav() {
           aria-label="Mehring, inicio"
         >
           <Logo
-            className={`h-7 w-auto transition-colors duration-500 ${
+            className={`transition-colors duration-500 ${
               solid ? 'text-bark' : 'text-cream'
             }`}
           />
