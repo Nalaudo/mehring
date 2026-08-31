@@ -12,6 +12,12 @@ de la Argentina, fundada en 1953.
 - **Fuentes self-hosted**, sin llamadas a Google Fonts: Fraunces (display) + Inter (texto).
 - **Logo**: el logotipo oficial (`public/img/mehring-logo.svg`) va inline en
   `src/components/Logo.tsx` con `fill="currentColor"`, así se adapta al color de cada fondo.
+- **Favicons** (`public/`), todos crema sobre cuadrado redondeado oscuro:
+  - `favicon.svg` — la **h** del logo (el activo, referenciado en `index.html`)
+  - `favicon-h.svg` — copia del anterior
+  - `favicon-m.svg` — la **m** del logo
+  - `favicon-legacy-m.svg` — la versión vieja en texto ("m."), guardada por las dudas
+  Para cambiar el activo, copiá el que quieras sobre `favicon.svg`.
 - Animaciones de entrada con CSS + hooks propios de `IntersectionObserver`
   (`src/hooks/useReveal.ts`, `src/hooks/useScrollSpy.ts`) — sin dependencias de animación.
 - Navegación con scroll suave con easing propio (`src/lib/smoothScroll.ts`).
