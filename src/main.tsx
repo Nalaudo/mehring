@@ -4,7 +4,7 @@ import "@fontsource-variable/fraunces/wght.css";
 import "@fontsource-variable/fraunces/wght-italic.css";
 import "@fontsource-variable/inter/wght.css";
 import "./index.css";
-import { Analytics } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/react";
 import App from "./App.tsx";
 
 createRoot(document.getElementById("root")!).render(
