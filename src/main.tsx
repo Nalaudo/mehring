@@ -5,11 +5,13 @@ import "@fontsource-variable/fraunces/wght-italic.css";
 import "@fontsource-variable/inter/wght.css";
 import "./index.css";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import App from "./App.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Analytics />
+    <SpeedInsights />
     <App />
   </StrictMode>,
 );
