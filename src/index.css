@@ -4,14 +4,18 @@
   --font-display: 'Fraunces Variable', 'Fraunces', ui-serif, Georgia, serif;
   --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
 
-  --color-cream: #f6f1e7;
-  --color-sand: #ece3d2;
-  --color-bark: #2c2620;
-  --color-ink: #1a1712;
-  --color-clay: #b4623b;
-  --color-clay-dark: #8f4a2c;
-  --color-moss: #5b6350;
-  --color-oak: #c9a26b;
+  /* Manual de identidad corporativa Mehring 2026 — paleta oficial: bordó
+     #5f1b15, oliva #61532e, marrón #431708, #fafafa/#ffffff/#000000.
+     sand y oak son tintas derivadas de oliva/bordó (no swatches del manual)
+     para separación tonal de UI que el manual impreso no cubre. */
+  --color-cream: #fafafa;
+  --color-sand: #e3dbc4;
+  --color-bark: #431708;
+  --color-ink: #000000;
+  --color-clay: #5f1b15;
+  --color-clay-dark: #2d0d0a;
+  --color-moss: #61532e;
+  --color-oak: #a68e4f;
 }
 
 :root {
