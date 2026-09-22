@@ -5,10 +5,12 @@ import { useScrollSpy } from '../hooks/useScrollSpy'
 import { handleAnchorClick } from '../lib/smoothScroll'
 
 const links = [
-  { id: 'historia', label: 'Historia' },
+  { id: 'nosotros', label: 'Nosotros' },
   { id: 'colecciones', label: 'Colecciones' },
-  { id: 'oficio', label: 'Oficio' },
-  { id: 'terminaciones', label: 'Terminaciones' },
+  { id: 'lustres', label: 'Lustres' },
+  { id: 'tapizados', label: 'Tapizados' },
+  { id: 'corporativos', label: 'Corporativos' },
+  { id: 'profesionales', label: 'Profesionales' },
   { id: 'contacto', label: 'Contacto' },
 ]
 const sectionIds = links.map((l) => l.id)
@@ -58,7 +60,7 @@ export default function Nav() {
         </a>
 
         <ul
-          className={`hidden items-center gap-8 text-sm transition-colors duration-500 md:flex ${
+          className={`hidden items-center gap-5 text-sm transition-colors duration-500 lg:flex xl:gap-8 ${
             scrolled ? 'text-bark' : 'text-cream'
           }`}
         >
@@ -90,7 +92,7 @@ export default function Nav() {
         <a
           href="#contacto"
           onClick={(e) => handleAnchorClick(e)}
-          className={`hidden rounded-full px-5 py-2 text-sm font-medium transition-colors duration-500 md:inline-block ${
+          className={`hidden rounded-full px-5 py-2 text-sm font-medium transition-colors duration-500 lg:inline-block ${
             solid
               ? 'bg-bark text-cream hover:bg-ink'
               : 'bg-cream/95 text-bark hover:bg-cream'
@@ -100,7 +102,7 @@ export default function Nav() {
         </a>
 
         <button
-          className={`transition-colors duration-500 md:hidden ${
+          className={`transition-colors duration-500 lg:hidden ${
             solid ? 'text-bark' : 'text-cream'
           }`}
           onClick={() => setOpen((v) => !v)}
@@ -112,7 +114,7 @@ export default function Nav() {
       </nav>
 
       <div
-        className={`grid overflow-hidden bg-cream transition-[grid-template-rows,opacity] duration-300 ease-out md:hidden ${
+        className={`grid overflow-hidden bg-cream transition-[grid-template-rows,opacity] duration-300 ease-out lg:hidden ${
           open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
         }`}
       >

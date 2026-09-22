@@ -1,11 +1,14 @@
 import { useEffect } from 'react'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
-import Historia from './components/Historia'
+import Nosotros from './components/Nosotros'
 import Colecciones from './components/Colecciones'
 import Oficio from './components/Oficio'
 import Cita from './components/Cita'
-import Terminaciones from './components/Terminaciones'
+import Lustres from './components/Lustres'
+import Tapizados from './components/Tapizados'
+import Corporativos from './components/Corporativos'
+import Profesionales from './components/Profesionales'
 import Contacto from './components/Contacto'
 import Footer from './components/Footer'
 import { scrollToId } from './lib/smoothScroll'
@@ -28,11 +31,14 @@ export default function App() {
       <Nav />
       <main>
         <Hero />
-        <Historia />
+        <Nosotros />
         <Colecciones />
         <Oficio />
         <Cita />
-        <Terminaciones />
+        <Lustres />
+        <Tapizados />
+        <Corporativos />
+        <Profesionales />
         <Contacto />
       </main>
       <Footer />

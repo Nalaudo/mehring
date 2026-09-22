@@ -2,10 +2,12 @@ import { Logo } from './Logo'
 import { handleAnchorClick } from '../lib/smoothScroll'
 
 const navLinks = [
-  { href: '#historia', label: 'Historia' },
+  { href: '#nosotros', label: 'Nosotros' },
   { href: '#colecciones', label: 'Colecciones' },
-  { href: '#oficio', label: 'Oficio' },
-  { href: '#terminaciones', label: 'Terminaciones' },
+  { href: '#lustres', label: 'Lustres' },
+  { href: '#tapizados', label: 'Tapizados' },
+  { href: '#corporativos', label: 'Corporativos' },
+  { href: '#profesionales', label: 'Profesionales' },
   { href: '#contacto', label: 'Contacto' },
 ]
 
