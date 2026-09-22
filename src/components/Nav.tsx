@@ -9,6 +9,7 @@ const links = [
   { id: 'colecciones', label: 'Colecciones' },
   { id: 'lustres', label: 'Lustres' },
   { id: 'tapizados', label: 'Tapizados' },
+  { id: 'shop', label: 'Shop' },
   { id: 'corporativos', label: 'Corporativos' },
   { id: 'profesionales', label: 'Profesionales' },
   { id: 'contacto', label: 'Contacto' },

@@ -7,6 +7,7 @@ import Oficio from './components/Oficio'
 import Cita from './components/Cita'
 import Lustres from './components/Lustres'
 import Tapizados from './components/Tapizados'
+import Shop from './components/Shop'
 import Corporativos from './components/Corporativos'
 import Profesionales from './components/Profesionales'
 import Contacto from './components/Contacto'
@@ -37,6 +38,7 @@ export default function App() {
         <Cita />
         <Lustres />
         <Tapizados />
+        <Shop />
         <Corporativos />
         <Profesionales />
         <Contacto />

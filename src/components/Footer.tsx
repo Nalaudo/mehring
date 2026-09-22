@@ -6,6 +6,7 @@ const navLinks = [
   { href: '#colecciones', label: 'Colecciones' },
   { href: '#lustres', label: 'Lustres' },
   { href: '#tapizados', label: 'Tapizados' },
+  { href: '#shop', label: 'Shop' },
   { href: '#corporativos', label: 'Corporativos' },
   { href: '#profesionales', label: 'Profesionales' },
   { href: '#contacto', label: 'Contacto' },
