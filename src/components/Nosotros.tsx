@@ -1,11 +1,11 @@
-import Reveal from './Reveal'
+import Reveal from "./Reveal";
 
 const stats = [
-  { value: '1953', label: 'Año de fundación' },
-  { value: '+70', label: 'Años de oficio' },
-  { value: '3.700 m²', label: 'Plantas productivas cubiertas' },
-  { value: '~40', label: 'Personas en planta' },
-]
+  { value: "1953", label: "Año de fundación" },
+  { value: "+70", label: "Años de oficio" },
+  { value: "3.700 m²", label: "Plantas productivas cubiertas" },
+  { value: "~40", label: "Personas en planta" },
+];
 
 export default function Nosotros() {
   return (
@@ -20,12 +20,15 @@ export default function Nosotros() {
             </h2>
           </Reveal>
 
-          <Reveal delay={0.1} className="flex flex-col gap-5 text-bark/75 sm:text-lg">
+          <Reveal
+            delay={0.1}
+            className="flex flex-col gap-5 text-bark/75 sm:text-lg"
+          >
             <p>
               MEHRING® fue fundada por Gerardo Remigio Mehring, un visionario
-              que en 1953 dio sus primeros pasos con una pequeña carpintería
-              en Esperanza, provincia de Santa Fe. Con el paso de los años,
-              aquel taller se transformó en{' '}
+              que en 1953 dio sus primeros pasos con una pequeña carpintería en
+              Esperanza, provincia de Santa Fe. Con el paso de los años, aquel
+              taller se transformó en{" "}
               <span className="text-bark">
                 la primera fábrica de sillas en serie de la Argentina
               </span>
@@ -48,25 +51,14 @@ export default function Nosotros() {
             </p>
             <p>
               Por eso, después de más de siete décadas de historia, podemos
-              afirmar con orgullo que MEHRING® es{' '}
+              afirmar con orgullo que MEHRING® es{" "}
               <span className="text-bark">"Sinónimo de Sillas"</span> en la
               Argentina.
             </p>
           </Reveal>
         </div>
 
-        <div className="mt-20 grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:items-center lg:gap-16">
-          <Reveal>
-            <div className="overflow-hidden rounded-2xl">
-              <img
-                src="/img/milan.webp"
-                alt="Mehring presente en el Salone del Mobile de Milán"
-                loading="lazy"
-                decoding="async"
-                className="aspect-4/5 h-full w-full object-cover sm:aspect-video lg:aspect-4/5"
-              />
-            </div>
-          </Reveal>
+        <div className="mt-20 gap-10 lg:items-center lg:gap-16">
           <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-bark/10 sm:grid-cols-4">
             {stats.map((s, i) => (
               <Reveal
@@ -84,5 +76,5 @@ export default function Nosotros() {
         </div>
       </div>
     </section>
-  )
+  );
 }
