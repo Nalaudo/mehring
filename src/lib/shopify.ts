@@ -2,16 +2,10 @@
 // hosts the store, the cart and the checkout. This file only wires the
 // widget into the page.
 //
-// Setup required before this does anything (see .env.example):
-//   1. Create a Shopify store (shopify.com) and add your products.
-//   2. In the Shopify admin, go to Settings -> Apps and sales channels ->
-//      Develop apps -> create an app -> Configure Storefront API scopes
-//      (enable at least "unauthenticated_read_product_listings") -> install
-//      the app -> copy the "Storefront API access token".
-//   3. Grab your *.myshopify.com domain and the numeric/GID id of the
-//      collection you want to show (Products -> Collections -> the id is in
-//      the URL, or use the GraphQL Storefront API to look it up).
-//   4. Put the three values in a local .env file (never commit it).
+// Setup (see .env.example): install the "Buy Button" sales channel in the
+// Shopify admin, create a Buy Button for a collection and use "Generate
+// code". The snippet contains the three values needed in .env: domain,
+// storefrontAccessToken and the collection id.
 
 declare global {
   interface Window {
@@ -21,8 +15,8 @@ declare global {
 
 interface ShopifyBuySdk {
   buildClient(config: { domain: string; storefrontAccessToken: string }): unknown
-  UI: {
-    init(client: unknown): ShopifyBuyUI
+  UI?: {
+    onReady(client: unknown): Promise<ShopifyBuyUI>
   }
 }
 
@@ -33,13 +27,13 @@ interface ShopifyBuyUI {
   ): Promise<unknown>
 }
 
-const SDK_URL = 'https://sdks.shopifycdn.com/buy-button/latest/buybutton.js'
+const SDK_URL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js'
 
 let sdkPromise: Promise<ShopifyBuySdk> | null = null
 
 /** Injects the Buy Button script tag once and resolves with the global SDK. */
 export function loadShopifySdk(): Promise<ShopifyBuySdk> {
-  if (window.ShopifyBuy) return Promise.resolve(window.ShopifyBuy)
+  if (window.ShopifyBuy?.UI) return Promise.resolve(window.ShopifyBuy)
 
   if (!sdkPromise) {
     sdkPromise = new Promise((resolve, reject) => {
@@ -47,8 +41,8 @@ export function loadShopifySdk(): Promise<ShopifyBuySdk> {
       script.src = SDK_URL
       script.async = true
       script.onload = () => {
-        if (window.ShopifyBuy) resolve(window.ShopifyBuy)
-        else reject(new Error('Shopify Buy Button SDK cargó pero no expuso window.ShopifyBuy'))
+        if (window.ShopifyBuy?.UI) resolve(window.ShopifyBuy)
+        else reject(new Error('Shopify Buy Button SDK cargó pero no expuso window.ShopifyBuy.UI'))
       }
       script.onerror = () => reject(new Error('No se pudo cargar el SDK de Shopify Buy Button'))
       document.head.appendChild(script)
@@ -72,43 +66,93 @@ export function isShopifyConfigured(): boolean {
   )
 }
 
+const BARK = '#431708'
+const BARK_HOVER = '#72270e'
+
+const primaryButton = {
+  'background-color': BARK,
+  ':hover': { 'background-color': BARK_HOVER },
+  ':focus': { 'background-color': BARK_HOVER },
+  'border-radius': '40px',
+  'padding-left': '34px',
+  'padding-right': '34px',
+}
+
+/**
+ * Looks up the store's collections through the Storefront API and returns a
+ * map of collection handle -> numeric collection id. Category tabs in the Shop
+ * are built from the collections whose handle matches a catalog category.
+ */
+export async function fetchCollectionIds(): Promise<Record<string, string>> {
+  const res = await fetch(`https://${shopifyConfig.domain}/api/2025-01/graphql.json`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': shopifyConfig.storefrontAccessToken!,
+    },
+    body: JSON.stringify({
+      query: '{ collections(first: 50) { edges { node { id handle } } } }',
+    }),
+  })
+  if (!res.ok) throw new Error(`Storefront API respondió ${res.status}`)
+  const json = (await res.json()) as {
+    data?: { collections: { edges: { node: { id: string; handle: string } }[] } }
+  }
+  const ids: Record<string, string> = {}
+  for (const { node } of json.data?.collections.edges ?? []) {
+    ids[node.handle] = node.id.split('/').pop()!
+  }
+  return ids
+}
+
 /** Mounts a Buy Button "collection" component into `node`. Call once per node. */
-export async function mountShopifyCollection(node: HTMLElement) {
+export async function mountShopifyCollection(
+  node: HTMLElement,
+  collectionId: string = shopifyConfig.collectionId!,
+) {
+  if (node.dataset.shopifyMounted) return
+  node.dataset.shopifyMounted = 'true'
   const ShopifyBuy = await loadShopifySdk()
   const client = ShopifyBuy.buildClient({
     domain: shopifyConfig.domain!,
     storefrontAccessToken: shopifyConfig.storefrontAccessToken!,
   })
-  const ui = ShopifyBuy.UI.init(client)
+  const ui = await ShopifyBuy.UI!.onReady(client)
   return ui.createComponent('collection', {
-    id: shopifyConfig.collectionId!,
+    id: collectionId,
     node,
+    moneyFormat: '%24%7B%7Bamount_with_comma_separator%7D%7D',
     options: {
       product: {
         styles: {
           product: {
             '@media (min-width: 601px)': {
-              'max-width': 'calc(33.33% - 20px)',
+              'max-width': 'calc(25% - 20px)',
               'margin-left': '20px',
               'margin-bottom': '50px',
+              width: 'calc(25% - 20px)',
+            },
+            img: {
+              height: 'calc(100% - 15px)',
+              position: 'absolute',
+              left: '0',
+              right: '0',
+              top: '0',
+            },
+            imgWrapper: {
+              'padding-top': 'calc(75% + 15px)',
+              position: 'relative',
+              height: '0',
             },
           },
-          title: {
-            'font-family': 'Inter, sans-serif',
-            'font-weight': '600',
-            color: '#431708',
-          },
-          button: {
-            'font-family': 'Inter, sans-serif',
-            'background-color': '#431708',
-            ':hover': { 'background-color': '#000000' },
-            ':focus': { 'background-color': '#000000' },
-            'border-radius': '999px',
-          },
-          price: { color: '#5f1b15' },
-          compareAt: { color: '#61532e' },
+          title: { 'font-size': '20px', color: BARK },
+          button: primaryButton,
+          price: { 'font-size': '16px', color: BARK },
+          compareAt: { 'font-size': '13.6px', color: BARK },
+          unitPrice: { 'font-size': '13.6px', color: BARK },
         },
-        contents: { options: false },
+        contents: { button: false, buttonWithQuantity: true },
+        text: { button: 'Añadir al carrito' },
       },
       productSet: {
         styles: {
@@ -116,31 +160,53 @@ export async function mountShopifyCollection(node: HTMLElement) {
         },
       },
       modalProduct: {
-        contents: { buttonWithQuantity: true },
-        styles: {
-          button: {
-            'font-family': 'Inter, sans-serif',
-            'background-color': '#431708',
-            ':hover': { 'background-color': '#000000' },
-            ':focus': { 'background-color': '#000000' },
-            'border-radius': '999px',
-          },
+        contents: {
+          img: false,
+          imgWithCarousel: true,
+          button: false,
+          buttonWithQuantity: true,
         },
+        styles: {
+          product: {
+            '@media (min-width: 601px)': {
+              'max-width': '100%',
+              'margin-left': '0px',
+              'margin-bottom': '0px',
+            },
+          },
+          button: primaryButton,
+          title: { 'font-weight': 'bold', 'font-size': '26px', color: BARK },
+          price: { 'font-weight': 'normal', 'font-size': '18px', color: BARK },
+          compareAt: { 'font-weight': 'normal', 'font-size': '15.3px', color: BARK },
+          unitPrice: { 'font-weight': 'normal', 'font-size': '15.3px', color: BARK },
+        },
+        text: { button: 'Añadir al carrito' },
       },
+      option: {},
       cart: {
         styles: {
           button: {
-            'font-family': 'Inter, sans-serif',
-            'background-color': '#431708',
-            ':hover': { 'background-color': '#000000' },
-            ':focus': { 'background-color': '#000000' },
-            'border-radius': '999px',
+            'background-color': BARK,
+            ':hover': { 'background-color': BARK_HOVER },
+            ':focus': { 'background-color': BARK_HOVER },
+            'border-radius': '40px',
           },
+        },
+        text: {
+          title: 'Carrito',
+          total: 'Subtotal',
+          empty: 'Tu carrito está vacío.',
+          notice: 'Envío y códigos de descuentos son añadidos al final.',
+          button: 'Proceder al pago',
         },
       },
       toggle: {
         styles: {
-          toggle: { 'background-color': '#431708' },
+          toggle: {
+            'background-color': BARK,
+            ':hover': { 'background-color': BARK_HOVER },
+            ':focus': { 'background-color': BARK_HOVER },
+          },
         },
       },
     },

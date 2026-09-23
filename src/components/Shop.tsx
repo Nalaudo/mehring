@@ -1,26 +1,60 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ShoppingBag } from 'lucide-react'
 import Reveal from './Reveal'
-import { isShopifyConfigured, mountShopifyCollection } from '../lib/shopify'
+import {
+  fetchCollectionIds,
+  isShopifyConfigured,
+  mountShopifyCollection,
+  shopifyConfig,
+} from '../lib/shopify'
+import { categories } from '../data/products'
 import { handleAnchorClick } from '../lib/smoothScroll'
+
+function handleOf(label: string) {
+  return label
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
 
 export default function Shop() {
   const configured = isShopifyConfigured()
   const nodeRef = useRef<HTMLDivElement>(null)
   const [error, setError] = useState<string | null>(null)
+  const [collectionIds, setCollectionIds] = useState<Record<string, string>>({})
+  const [selectedId, setSelectedId] = useState('')
+  const [ready, setReady] = useState(false)
+
+  // One tab per catalog category that has a matching Shopify collection
+  // (handle = slugified category). The main collection is only a fallback
+  // for when no category collections exist yet.
+  const tabs = useMemo(() => {
+    const byCategory = categories
+      .filter((c) => collectionIds[handleOf(c)])
+      .map((c) => ({ label: c, id: collectionIds[handleOf(c)] }))
+    return byCategory.length
+      ? byCategory
+      : [{ label: 'Todos', id: shopifyConfig.collectionId ?? '' }]
+  }, [collectionIds])
+  const activeId = tabs.some((t) => t.id === selectedId) ? selectedId : tabs[0].id
 
   useEffect(() => {
-    if (!configured || !nodeRef.current) return
-    let cancelled = false
-
-    mountShopifyCollection(nodeRef.current).catch((err: Error) => {
-      if (!cancelled) setError(err.message)
-    })
-
-    return () => {
-      cancelled = true
-    }
+    if (!configured) return
+    fetchCollectionIds()
+      .then(setCollectionIds)
+      .catch(() => {})
+      .finally(() => setReady(true))
   }, [configured])
+
+  useEffect(() => {
+    if (!configured || !ready || !nodeRef.current) return
+    setError(null)
+    mountShopifyCollection(nodeRef.current, activeId).catch((err: Error) =>
+      setError(err.message),
+    )
+  }, [configured, ready, activeId])
 
   return (
     <section id="shop" className="bg-sand py-24 sm:py-32">
@@ -39,7 +73,24 @@ export default function Shop() {
         <div className="mt-12">
           {configured ? (
             <>
-              <div ref={nodeRef} />
+              {tabs.length > 1 && (
+                <div className="mb-10 flex flex-wrap gap-2.5">
+                  {tabs.map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => setSelectedId(t.id)}
+                      className={`rounded-full border px-4 py-2 text-sm transition-colors ${
+                        activeId === t.id
+                          ? 'border-bark bg-bark text-cream'
+                          : 'border-bark/20 text-bark/70 hover:border-bark/50'
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {ready && <div key={activeId} ref={nodeRef} />}
               {error && (
                 <p className="rounded-xl bg-clay/10 p-5 text-sm text-clay">
                   No se pudo cargar la tienda: {error}
