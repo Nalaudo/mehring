@@ -60,13 +60,13 @@ export default function Colecciones() {
                 animationDelay: `${Math.min(i, 8) * 45}ms`,
               }}
             >
-              <div className="relative aspect-4/5 overflow-hidden bg-sand">
+              <div className="relative aspect-square overflow-hidden bg-cream">
                 <img
                   src={p.image}
                   alt={p.name}
                   loading="lazy"
                   decoding="async"
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-105"
                 />
                 {p.isNew && (
                   <span className="absolute left-4 top-4 rounded-full bg-clay px-3 py-1 text-xs font-medium tracking-wide text-cream">
