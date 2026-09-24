@@ -158,6 +158,7 @@ export async function mountShopifyCollection(
         styles: {
           products: { '@media (min-width: 601px)': { 'margin-left': '-20px' } },
         },
+        text: { nextPageButton: 'Siguiente página' },
       },
       modalProduct: {
         contents: {
