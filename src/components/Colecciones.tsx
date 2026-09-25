@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import Reveal from './Reveal'
+import ProductoDetalle from './ProductoDetalle'
 import { categories, products, type Category } from '../data/products'
 
 type Filter = 'Todos' | Category
@@ -8,6 +9,7 @@ const filters: Filter[] = ['Todos', ...categories]
 
 export default function Colecciones() {
   const [active, setActive] = useState<Filter>('Todos')
+  const [selected, setSelected] = useState<number | null>(null)
 
   const visible = useMemo(
     () =>
@@ -52,9 +54,12 @@ export default function Colecciones() {
           className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
           {visible.map((p, i) => (
-            <article
+            <button
+              type="button"
               key={p.name}
-              className="group flex flex-col overflow-hidden rounded-2xl bg-cream shadow-sm"
+              onClick={() => setSelected(i)}
+              aria-haspopup="dialog"
+              className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl bg-cream text-left shadow-sm transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay"
               style={{
                 animation: `fade-up 0.5s cubic-bezier(0.22,1,0.36,1) both`,
                 animationDelay: `${Math.min(i, 8) * 45}ms`,
@@ -85,10 +90,12 @@ export default function Colecciones() {
                   {p.blurb}
                 </p>
               </div>
-            </article>
+            </button>
           ))}
         </div>
       </div>
+
+      <ProductoDetalle products={visible} index={selected} onChange={setSelected} />
     </section>
   )
 }
