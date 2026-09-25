@@ -66,7 +66,7 @@ export default function ProductoDetalle({ products, index, onChange }: ProductoD
         if (e.target === e.currentTarget) onChange(null)
       }}
       aria-labelledby="producto-detalle-titulo"
-      className="relative m-auto max-h-[92dvh] w-[calc(100%-2rem)] max-w-5xl overflow-hidden rounded-2xl bg-cream p-0 text-bark shadow-2xl backdrop:bg-ink/60 backdrop:backdrop-blur-sm"
+      className="m-auto max-h-[92dvh] w-[calc(100%-2rem)] max-w-5xl overflow-hidden rounded-2xl bg-cream p-0 text-bark shadow-2xl backdrop:bg-ink/60 backdrop:backdrop-blur-sm"
     >
       {product && (
         <>
