@@ -1,6 +1,12 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, Mail, MessageCircle, X } from 'lucide-react'
 import type { Product } from '../data/products'
+import {
+  fetchProductIds,
+  isShopifyConfigured,
+  mountShopifyProduct,
+  toHandle,
+} from '../lib/shopify'
 
 interface ProductoDetalleProps {
   products: Product[]
@@ -9,6 +15,47 @@ interface ProductoDetalleProps {
 }
 
 const WHATSAPP = '5493496530698'
+
+/**
+ * Buy Button for the catalogue product, when a Shopify product with the same
+ * handle (or title) is published to the Buy Button channel. Renders nothing
+ * otherwise, leaving only the consultation links.
+ */
+function CompraShopify({ product, onAddToCart }: { product: Product; onAddToCart: () => void }) {
+  const nodeRef = useRef<HTMLDivElement>(null)
+  const [productId, setProductId] = useState<string | null>(null)
+  const addRef = useRef(onAddToCart)
+  useEffect(() => {
+    addRef.current = onAddToCart
+  })
+
+  useEffect(() => {
+    let cancelled = false
+    fetchProductIds()
+      .then((ids) => {
+        if (!cancelled) setProductId(ids[toHandle(product.name)] ?? null)
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [product.name])
+
+  useEffect(() => {
+    if (!productId || !nodeRef.current) return
+    mountShopifyProduct(nodeRef.current, productId, () => addRef.current()).catch(() =>
+      setProductId(null),
+    )
+  }, [productId])
+
+  if (!productId) return null
+  return (
+    <div className="mt-8 border-t border-bark/10 pt-6">
+      <p className="text-xs uppercase tracking-wider text-bark/50">Comprá online</p>
+      <div key={productId} ref={nodeRef} className="mt-3" />
+    </div>
+  )
+}
 
 /** Detail view for a catalogue product, rendered as a native modal <dialog>. */
 export default function ProductoDetalle({ products, index, onChange }: ProductoDetalleProps) {
@@ -132,6 +179,10 @@ export default function ProductoDetalle({ products, index, onChange }: ProductoD
                 Disponible en distintos tonos de lustre y lacas poliuretánicas, con
                 una amplia carta de telas para tapicería.
               </p>
+
+              {isShopifyConfigured() && (
+                <CompraShopify key={product.name} product={product} onAddToCart={() => onChange(null)} />
+              )}
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row md:flex-col xl:flex-row">
                 <a

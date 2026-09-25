@@ -52,6 +52,30 @@ export function loadShopifySdk(): Promise<ShopifyBuySdk> {
   return sdkPromise
 }
 
+let uiPromise: Promise<ShopifyBuyUI> | null = null
+
+/**
+ * One UI instance for the whole page: every Buy Button component created from
+ * it shares the same cart, so products added from the catalogue detail and
+ * from the Shop section end up together.
+ */
+function getShopifyUI(): Promise<ShopifyBuyUI> {
+  if (!uiPromise) {
+    uiPromise = loadShopifySdk().then((ShopifyBuy) =>
+      ShopifyBuy.UI!.onReady(
+        ShopifyBuy.buildClient({
+          domain: shopifyConfig.domain!,
+          storefrontAccessToken: shopifyConfig.storefrontAccessToken!,
+        }),
+      ),
+    )
+    uiPromise.catch(() => {
+      uiPromise = null
+    })
+  }
+  return uiPromise
+}
+
 export const shopifyConfig = {
   domain: import.meta.env.VITE_SHOPIFY_DOMAIN,
   storefrontAccessToken: import.meta.env.VITE_SHOPIFY_STOREFRONT_TOKEN,
@@ -78,28 +102,96 @@ const primaryButton = {
   'padding-right': '34px',
 }
 
-/**
- * Looks up the store's collections through the Storefront API and returns a
- * map of collection handle -> numeric collection id. Category tabs in the Shop
- * are built from the collections whose handle matches a catalog category.
- */
-export async function fetchCollectionIds(): Promise<Record<string, string>> {
+const cartOptions = {
+  styles: {
+    button: {
+      'background-color': BARK,
+      ':hover': { 'background-color': BARK_HOVER },
+      ':focus': { 'background-color': BARK_HOVER },
+      'border-radius': '40px',
+    },
+  },
+  text: {
+    title: 'Carrito',
+    total: 'Subtotal',
+    empty: 'Tu carrito está vacío.',
+    notice: 'Envío y códigos de descuentos son añadidos al final.',
+    button: 'Proceder al pago',
+  },
+}
+
+const toggleOptions = {
+  styles: {
+    toggle: {
+      'background-color': BARK,
+      ':hover': { 'background-color': BARK_HOVER },
+      ':focus': { 'background-color': BARK_HOVER },
+    },
+  },
+}
+
+/** Slug as Shopify builds handles: lowercase, no accents, dashes. */
+export function toHandle(label: string) {
+  return label
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+async function storefrontQuery<T>(query: string): Promise<T | undefined> {
   const res = await fetch(`https://${shopifyConfig.domain}/api/2025-01/graphql.json`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'X-Shopify-Storefront-Access-Token': shopifyConfig.storefrontAccessToken!,
     },
-    body: JSON.stringify({
-      query: '{ collections(first: 50) { edges { node { id handle } } } }',
-    }),
+    body: JSON.stringify({ query }),
   })
   if (!res.ok) throw new Error(`Storefront API respondió ${res.status}`)
-  const json = (await res.json()) as {
-    data?: { collections: { edges: { node: { id: string; handle: string } }[] } }
+  return ((await res.json()) as { data?: T }).data
+}
+
+let productIdsPromise: Promise<Record<string, string>> | null = null
+
+/**
+ * Map of handle -> numeric product id for every product published to the Buy
+ * Button channel. Keyed by both the product handle and its slugified title, so
+ * a catalogue product matches when either equals `toHandle(product.name)`.
+ * Fetched once per page load.
+ */
+export function fetchProductIds(): Promise<Record<string, string>> {
+  if (!productIdsPromise) {
+    productIdsPromise = storefrontQuery<{
+      products: { edges: { node: { id: string; handle: string; title: string } }[] }
+    }>('{ products(first: 250) { edges { node { id handle title } } } }').then((data) => {
+      const ids: Record<string, string> = {}
+      for (const { node } of data?.products.edges ?? []) {
+        const id = node.id.split('/').pop()!
+        ids[toHandle(node.title)] ??= id
+        ids[node.handle] = id
+      }
+      return ids
+    })
+    productIdsPromise.catch(() => {
+      productIdsPromise = null
+    })
   }
+  return productIdsPromise
+}
+
+/**
+ * Looks up the store's collections through the Storefront API and returns a
+ * map of collection handle -> numeric collection id. Category tabs in the Shop
+ * are built from the collections whose handle matches a catalog category.
+ */
+export async function fetchCollectionIds(): Promise<Record<string, string>> {
+  const data = await storefrontQuery<{
+    collections: { edges: { node: { id: string; handle: string } }[] }
+  }>('{ collections(first: 50) { edges { node { id handle } } } }')
   const ids: Record<string, string> = {}
-  for (const { node } of json.data?.collections.edges ?? []) {
+  for (const { node } of data?.collections.edges ?? []) {
     ids[node.handle] = node.id.split('/').pop()!
   }
   return ids
@@ -112,12 +204,7 @@ export async function mountShopifyCollection(
 ) {
   if (node.dataset.shopifyMounted) return
   node.dataset.shopifyMounted = 'true'
-  const ShopifyBuy = await loadShopifySdk()
-  const client = ShopifyBuy.buildClient({
-    domain: shopifyConfig.domain!,
-    storefrontAccessToken: shopifyConfig.storefrontAccessToken!,
-  })
-  const ui = await ShopifyBuy.UI!.onReady(client)
+  const ui = await getShopifyUI()
   return ui.createComponent('collection', {
     id: collectionId,
     node,
@@ -184,32 +271,59 @@ export async function mountShopifyCollection(
         text: { button: 'Añadir al carrito' },
       },
       option: {},
-      cart: {
+      cart: cartOptions,
+      toggle: toggleOptions,
+    },
+  })
+}
+
+/**
+ * Mounts a compact Buy Button "product" component (price, variant options,
+ * quantity and add-to-cart; no image or title) into `node`. `onAddToCart` runs
+ * when a variant is added, before the cart opens.
+ */
+export async function mountShopifyProduct(
+  node: HTMLElement,
+  productId: string,
+  onAddToCart?: () => void,
+) {
+  if (node.dataset.shopifyMounted) return
+  node.dataset.shopifyMounted = 'true'
+  const ui = await getShopifyUI()
+  return ui.createComponent('product', {
+    id: productId,
+    node,
+    moneyFormat: '%24%7B%7Bamount_with_comma_separator%7D%7D',
+    options: {
+      product: {
+        layout: 'horizontal',
+        contents: {
+          img: false,
+          imgWithCarousel: false,
+          title: false,
+          description: false,
+          button: false,
+          buttonWithQuantity: true,
+        },
         styles: {
-          button: {
-            'background-color': BARK,
-            ':hover': { 'background-color': BARK_HOVER },
-            ':focus': { 'background-color': BARK_HOVER },
-            'border-radius': '40px',
+          product: {
+            'text-align': 'left',
+            '@media (min-width: 601px)': {
+              'max-width': '100%',
+              'margin-left': '0',
+              'margin-bottom': '0',
+            },
           },
+          button: primaryButton,
+          price: { 'font-size': '22px', color: BARK },
+          compareAt: { 'font-size': '15px', color: BARK },
+          unitPrice: { 'font-size': '15px', color: BARK },
         },
-        text: {
-          title: 'Carrito',
-          total: 'Subtotal',
-          empty: 'Tu carrito está vacío.',
-          notice: 'Envío y códigos de descuentos son añadidos al final.',
-          button: 'Proceder al pago',
-        },
+        text: { button: 'Añadir al carrito' },
+        events: { addVariantToCart: () => onAddToCart?.() },
       },
-      toggle: {
-        styles: {
-          toggle: {
-            'background-color': BARK,
-            ':hover': { 'background-color': BARK_HOVER },
-            ':focus': { 'background-color': BARK_HOVER },
-          },
-        },
-      },
+      cart: cartOptions,
+      toggle: toggleOptions,
     },
   })
 }

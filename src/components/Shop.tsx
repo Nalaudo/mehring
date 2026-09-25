@@ -6,18 +6,10 @@ import {
   isShopifyConfigured,
   mountShopifyCollection,
   shopifyConfig,
+  toHandle,
 } from '../lib/shopify'
 import { categories } from '../data/products'
 import { handleAnchorClick } from '../lib/smoothScroll'
-
-function handleOf(label: string) {
-  return label
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-}
 
 export default function Shop() {
   const configured = isShopifyConfigured()
@@ -32,8 +24,8 @@ export default function Shop() {
   // for when no category collections exist yet.
   const tabs = useMemo(() => {
     const byCategory = categories
-      .filter((c) => collectionIds[handleOf(c)])
-      .map((c) => ({ label: c, id: collectionIds[handleOf(c)] }))
+      .filter((c) => collectionIds[toHandle(c)])
+      .map((c) => ({ label: c, id: collectionIds[toHandle(c)] }))
     return byCategory.length
       ? byCategory
       : [{ label: 'Todos', id: shopifyConfig.collectionId ?? '' }]
