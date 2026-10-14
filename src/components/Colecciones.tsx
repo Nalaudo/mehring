@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import Reveal from './Reveal'
 import ProductoDetalle from './ProductoDetalle'
-import { categories, products, type Category } from '../data/products'
+import { categories, productSlug, products, type Category } from '../data/products'
 
 type Filter = 'Todos' | Category
 
@@ -56,7 +56,7 @@ export default function Colecciones() {
           {visible.map((p, i) => (
             <button
               type="button"
-              key={p.name}
+              key={productSlug(p)}
               onClick={() => setSelected(i)}
               aria-haspopup="dialog"
               className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl bg-cream text-left shadow-sm transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay"
@@ -87,7 +87,7 @@ export default function Colecciones() {
                   </span>
                 </div>
                 <p className="mt-2 text-sm leading-relaxed text-bark/60">
-                  {p.blurb}
+                  {p.description}
                 </p>
               </div>
             </button>
