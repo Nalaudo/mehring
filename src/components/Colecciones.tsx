@@ -2,13 +2,17 @@ import { useMemo, useState } from 'react'
 import Reveal from './Reveal'
 import ProductoDetalle from './ProductoDetalle'
 import { categories, productSlug, products, type Category } from '../data/products'
+import { routeForPath } from '../data/routes'
 
 type Filter = 'Todos' | Category
 
 const filters: Filter[] = ['Todos', ...categories]
 
 export default function Colecciones() {
-  const [active, setActive] = useState<Filter>('Todos')
+  // /sillas-y-sillones, /banquetas… open the catalogue already filtered.
+  const [active, setActive] = useState<Filter>(
+    () => routeForPath(window.location.pathname)?.category ?? 'Todos',
+  )
   const [selected, setSelected] = useState<number | null>(null)
 
   const visible = useMemo(
