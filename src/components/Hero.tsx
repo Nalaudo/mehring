@@ -13,8 +13,7 @@ export default function Hero() {
         decoding="async"
         className="hero-img absolute inset-0 h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/75 via-ink/45 to-ink/95" />
-      <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/55 to-ink/10" />
+      <div className="hero-overlay absolute inset-0" />
       <div className="grain absolute inset-0 opacity-[0.12]" />
 
       <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-5 pb-16 pt-[var(--nav-h)] sm:px-8 sm:pb-24">
