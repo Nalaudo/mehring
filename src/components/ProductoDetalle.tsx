@@ -1,12 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, Mail, MessageCircle, X } from 'lucide-react'
-import type { Product } from '../data/products'
-import {
-  fetchProductIds,
-  isShopifyConfigured,
-  mountShopifyProduct,
-  toHandle,
-} from '../lib/shopify'
+import { productSlug, type Product } from '../data/products'
+import { fetchProductIds, isShopifyConfigured, mountShopifyProduct } from '../lib/shopify'
 
 interface ProductoDetalleProps {
   products: Product[]
@@ -29,17 +24,18 @@ function CompraShopify({ product, onAddToCart }: { product: Product; onAddToCart
     addRef.current = onAddToCart
   })
 
+  const slug = productSlug(product)
   useEffect(() => {
     let cancelled = false
     fetchProductIds()
       .then((ids) => {
-        if (!cancelled) setProductId(ids[toHandle(product.name)] ?? null)
+        if (!cancelled) setProductId(ids[slug] ?? null)
       })
       .catch(() => {})
     return () => {
       cancelled = true
     }
-  }, [product.name])
+  }, [slug])
 
   useEffect(() => {
     if (!productId || !nodeRef.current) return
@@ -102,6 +98,14 @@ export default function ProductoDetalle({ products, index, onChange }: ProductoD
         .slice(0, 4)
     : []
 
+  const specs = product
+    ? ([
+        ['Medidas', product.medidas],
+        ['Madera', product.madera],
+        ['Variantes', product.variantes],
+      ].filter(([, v]) => v) as [string, string][])
+    : []
+
   const consulta = product ? `Hola, quisiera consultar por el modelo ${product.name} (${product.category}).` : ''
 
   return (
@@ -126,7 +130,7 @@ export default function ProductoDetalle({ products, index, onChange }: ProductoD
             <X size={22} strokeWidth={1.5} />
           </button>
           <div
-            key={product.name}
+            key={productSlug(product)}
             className="grid max-h-[92dvh] overflow-y-auto md:grid-cols-[1.15fr_1fr]"
             style={{ animation: 'fade-up 0.4s cubic-bezier(0.22,1,0.36,1) both' }}
           >
@@ -173,15 +177,26 @@ export default function ProductoDetalle({ products, index, onChange }: ProductoD
               >
                 {product.name}
               </h3>
-              <p className="mt-5 leading-relaxed text-bark/75 sm:text-lg">{product.blurb}</p>
+              <p className="mt-5 leading-relaxed text-bark/75 sm:text-lg">{product.description}</p>
+
+              {specs.length > 0 && (
+                <dl className="mt-6 flex flex-col gap-1.5 text-sm leading-relaxed text-bark/75">
+                  {specs.map(([label, value]) => (
+                    <div key={label}>
+                      <dt className="inline font-medium text-bark">{label}: </dt>
+                      <dd className="inline">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
 
               <p className="mt-6 text-sm leading-relaxed text-bark/60">
-                Disponible en distintos tonos de lustre y lacas poliuretánicas, con
-                una amplia carta de telas para tapicería.
+                {product.disponible ??
+                  'Disponible en distintos tonos de lustre y lacas poliuretánicas, con una amplia carta de telas para tapicería.'}
               </p>
 
               {isShopifyConfigured() && (
-                <CompraShopify key={product.name} product={product} onAddToCart={() => onChange(null)} />
+                <CompraShopify key={productSlug(product)} product={product} onAddToCart={() => onChange(null)} />
               )}
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row md:flex-col xl:flex-row">
@@ -211,7 +226,7 @@ export default function ProductoDetalle({ products, index, onChange }: ProductoD
                   <div className="mt-4 grid grid-cols-4 gap-3">
                     {related.map(({ p, i }) => (
                       <button
-                        key={p.name}
+                        key={productSlug(p)}
                         type="button"
                         onClick={() => onChange(i)}
                         className="group text-left"

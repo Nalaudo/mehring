@@ -15,8 +15,8 @@ export default function Nosotros() {
           <Reveal>
             <p className="eyebrow text-clay">Nosotros</p>
             <h2 className="mt-4 font-display text-4xl font-light leading-tight text-bark sm:text-5xl">
-              Un pequeño taller que se volvió la primera fábrica de sillas del
-              país
+              Un pequeño taller que se volvió la primera fábrica de sillas en
+              serie del país
             </h2>
           </Reveal>
 

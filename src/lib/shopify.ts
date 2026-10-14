@@ -158,7 +158,7 @@ let productIdsPromise: Promise<Record<string, string>> | null = null
 /**
  * Map of handle -> numeric product id for every product published to the Buy
  * Button channel. Keyed by both the product handle and its slugified title, so
- * a catalogue product matches when either equals `toHandle(product.name)`.
+ * a catalogue product matches when either equals `productSlug(product)` (its image file name, e.g. `banqueta-emma`).
  * Fetched once per page load.
  */
 export function fetchProductIds(): Promise<Record<string, string>> {
