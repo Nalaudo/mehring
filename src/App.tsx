@@ -13,13 +13,16 @@ import Profesionales from './components/Profesionales'
 import Contacto from './components/Contacto'
 import Footer from './components/Footer'
 import { scrollToId } from './lib/smoothScroll'
+import { routeForPath } from './data/routes'
 
 export default function App() {
-  // If the page is opened with a #hash, ease to it instead of the browser's jump.
+  // If the page is opened with a #hash or on a section path (/contacto,
+  // /banquetas…), ease to it instead of the browser's jump.
   useEffect(() => {
     const hash = window.location.hash
-    if (hash.length > 1) {
-      const id = hash.slice(1)
+    const id =
+      hash.length > 1 ? hash.slice(1) : routeForPath(window.location.pathname)?.section
+    if (id) {
       requestAnimationFrame(() => {
         window.scrollTo({ top: 0, behavior: 'auto' })
         setTimeout(() => scrollToId(id, 1100), 60)

@@ -1,0 +1,286 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/productos.php",
+      "destination": "/productos",
+      "permanent": true
+    },
+    {
+      "source": "/esp/productos/:rest*",
+      "destination": "/productos",
+      "permanent": true
+    },
+    {
+      "source": "/eng/productos/:rest*",
+      "destination": "/productos",
+      "permanent": true
+    },
+    {
+      "source": "/esp/colecciones/:rest*",
+      "destination": "/productos",
+      "permanent": true
+    },
+    {
+      "source": "/eng/colecciones/:rest*",
+      "destination": "/productos",
+      "permanent": true
+    },
+    {
+      "source": "/CATALOGO/:rest*",
+      "destination": "/productos",
+      "permanent": true
+    },
+    {
+      "source": "/catalogo/:rest*",
+      "destination": "/productos",
+      "permanent": true
+    },
+    {
+      "source": "/futones.php",
+      "destination": "/productos",
+      "permanent": true
+    },
+    {
+      "source": "/futones/:rest*",
+      "destination": "/productos",
+      "permanent": true
+    },
+    {
+      "source": "/esp/futones/:rest*",
+      "destination": "/productos",
+      "permanent": true
+    },
+    {
+      "source": "/eng/futones/:rest*",
+      "destination": "/productos",
+      "permanent": true
+    },
+    {
+      "source": "/ingles/futones/:rest*",
+      "destination": "/productos",
+      "permanent": true
+    },
+    {
+      "source": "/sillas-y-sillones.php",
+      "destination": "/sillas-y-sillones",
+      "permanent": true
+    },
+    {
+      "source": "/esp/sillas/:rest*",
+      "destination": "/sillas-y-sillones",
+      "permanent": true
+    },
+    {
+      "source": "/eng/sillas/:rest*",
+      "destination": "/sillas-y-sillones",
+      "permanent": true
+    },
+    {
+      "source": "/sillas/:rest*",
+      "destination": "/sillas-y-sillones",
+      "permanent": true
+    },
+    {
+      "source": "/sillones/:rest*",
+      "destination": "/sillas-y-sillones",
+      "permanent": true
+    },
+    {
+      "source": "/in/chairs/:rest*",
+      "destination": "/sillas-y-sillones",
+      "permanent": true
+    },
+    {
+      "source": "/ingles/sillas/:rest*",
+      "destination": "/sillas-y-sillones",
+      "permanent": true
+    },
+    {
+      "source": "/banquetas.php",
+      "destination": "/banquetas",
+      "permanent": true
+    },
+    {
+      "source": "/esp/banquetas/:rest*",
+      "destination": "/banquetas",
+      "permanent": true
+    },
+    {
+      "source": "/eng/banquetas/:rest*",
+      "destination": "/banquetas",
+      "permanent": true
+    },
+    {
+      "source": "/mesas-de-comedores-colecciones.php",
+      "destination": "/mesas-de-comedor",
+      "permanent": true
+    },
+    {
+      "source": "/mesas-ocasionales.php",
+      "destination": "/mesas-de-comedor",
+      "permanent": true
+    },
+    {
+      "source": "/esp/mesas/:rest*",
+      "destination": "/mesas-de-comedor",
+      "permanent": true
+    },
+    {
+      "source": "/eng/mesas/:rest*",
+      "destination": "/mesas-de-comedor",
+      "permanent": true
+    },
+    {
+      "source": "/buffets-valijeros.php",
+      "destination": "/buffets-y-vajilleros",
+      "permanent": true
+    },
+    {
+      "source": "/buffets-vajilleros.php",
+      "destination": "/buffets-y-vajilleros",
+      "permanent": true
+    },
+    {
+      "source": "/esp/buffets/:rest*",
+      "destination": "/buffets-y-vajilleros",
+      "permanent": true
+    },
+    {
+      "source": "/eng/buffets/:rest*",
+      "destination": "/buffets-y-vajilleros",
+      "permanent": true
+    },
+    {
+      "source": "/empresa.php",
+      "destination": "/la-empresa",
+      "permanent": true
+    },
+    {
+      "source": "/esp/la_empresa/:rest*",
+      "destination": "/la-empresa",
+      "permanent": true
+    },
+    {
+      "source": "/eng/la_empresa/:rest*",
+      "destination": "/la-empresa",
+      "permanent": true
+    },
+    {
+      "source": "/historia/:rest*",
+      "destination": "/la-empresa",
+      "permanent": true
+    },
+    {
+      "source": "/esp/tapizados-terminaciones/:rest*",
+      "destination": "/lustres",
+      "permanent": true
+    },
+    {
+      "source": "/eng/tapizados-terminaciones/:rest*",
+      "destination": "/lustres",
+      "permanent": true
+    },
+    {
+      "source": "/terminaciones.php",
+      "destination": "/lustres",
+      "permanent": true
+    },
+    {
+      "source": "/telas.php",
+      "destination": "/tapizados",
+      "permanent": true
+    },
+    {
+      "source": "/contacto.php",
+      "destination": "/contacto",
+      "permanent": true
+    },
+    {
+      "source": "/contacto/:rest+",
+      "destination": "/contacto",
+      "permanent": true
+    },
+    {
+      "source": "/esp/contacto/:rest*",
+      "destination": "/contacto",
+      "permanent": true
+    },
+    {
+      "source": "/eng/contacto/:rest*",
+      "destination": "/contacto",
+      "permanent": true
+    },
+    {
+      "source": "/esp/mapa/:rest*",
+      "destination": "/contacto",
+      "permanent": true
+    },
+    {
+      "source": "/eng/mapa/:rest*",
+      "destination": "/contacto",
+      "permanent": true
+    },
+    {
+      "source": "/in/contact/:rest*",
+      "destination": "/contacto",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/default.htm",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home.htm",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/novedades.php",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/esp/:rest*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/eng/:rest*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/in/:rest*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/ingles/:rest*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/principales/:rest*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/news/:rest*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)\\.(php|htm)",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}
