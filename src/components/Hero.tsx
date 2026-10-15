@@ -5,10 +5,12 @@ export default function Hero() {
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink">
       <img
-        src="/img/hero-lourdes-sofi.webp"
-        alt="Comedor con mesa Lourdes y sillas Sofi de Mehring"
-        width={1800}
-        height={1201}
+        src="/img/hero-comedor.webp"
+        srcSet="/img/hero-comedor-1100.webp 1100w, /img/hero-comedor.webp 2000w"
+        sizes="100vw"
+        alt="Comedor con mesa de madera y sillas con respaldo de esterilla de Mehring"
+        width={2000}
+        height={1544}
         fetchPriority="high"
         decoding="async"
         className="hero-img absolute inset-0 h-full w-full object-cover"
